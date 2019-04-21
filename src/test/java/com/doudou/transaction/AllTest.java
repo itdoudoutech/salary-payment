@@ -8,7 +8,11 @@ import org.junit.runners.Suite;
         AddCommissionedEmployeeTest.class,
         AddHourlyEmployeeTest.class ,
         AddSalariedEmployeeTest.class,
+        AddServiceChargeTransactionTest.class,
+        ChangeAddressTransactionTest.class,
+        ChangeNameTransactionTest.class,
         SalesReceiptTransactionTest.class,
-        TimeCardTransactionTest.class})
+        TimeCardTransactionTest.class}
+        )
 public class AllTest {
 }

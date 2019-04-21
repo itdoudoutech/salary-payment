@@ -13,9 +13,9 @@ public class PayrollDatabase {
     private static Map<Integer, Employee> employees = new HashMap<>();
 
     /**
-     * 雇员 ID - 协会会员 ID
+     * 协会会员 ID -- 雇员
      */
-    private static Map<Integer, Integer> empUnions = new HashMap<>();
+    private static Map<Integer, Employee> empUnions = new HashMap<>();
 
     public static Employee getEmployee(Integer empId){
         return employees.get(empId);
@@ -29,5 +29,13 @@ public class PayrollDatabase {
         Employee employee = employees.get(empId);
         employees.remove(empId);
         return employee;
+    }
+
+    public static Employee getUnionMember(Integer empId){
+        return empUnions.get(empId);
+    }
+
+    public static void addUnionMember(int memberId, Employee employee){
+        empUnions.put(memberId, employee);
     }
 }

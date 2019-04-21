@@ -5,12 +5,16 @@ import com.doudou.emp.Employee;
 import com.doudou.paymentClassification.HourlyClassification;
 import com.doudou.paymentClassification.TimeCard;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @AllArgsConstructor
+@NoArgsConstructor
 public class TimeCardTransaction implements Transaction{
 
+    @Getter
     private Date date;
 
     private double hours;
