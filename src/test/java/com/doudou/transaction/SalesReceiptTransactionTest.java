@@ -3,20 +3,16 @@ package com.doudou.transaction;
 import com.doudou.database.PayrollDatabase;
 import com.doudou.emp.Employee;
 import com.doudou.paymentClassification.CommissionedClassification;
-import com.doudou.paymentClassification.HourlyClassification;
 import com.doudou.paymentClassification.SalesReceipt;
-import com.doudou.paymentClassification.TimeCard;
-import com.doudou.paymentMethod.HoldMethod;
-import com.doudou.paymentSchedule.BiweeklySchedule;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Date;
 
-public class SalesReceiptTransactionTest {
+public class SalesReceiptTransactionTest extends BaseTest {
 
     @Test
-    public void addTest(){
+    public void salesReceiptTest() {
         int empId = 1;
         String name = "Bob";
         String address = "Home";
@@ -33,7 +29,7 @@ public class SalesReceiptTransactionTest {
         Employee employee = PayrollDatabase.getEmployee(empId);
         Assert.assertNotNull(employee);
         Assert.assertTrue(employee.getPaymentClassification() instanceof CommissionedClassification);
-        SalesReceipt sr = ((CommissionedClassification)employee.getPaymentClassification()).getSalesReceipt(today);
+        SalesReceipt sr = ((CommissionedClassification) employee.getPaymentClassification()).getSalesReceipt(today);
         Assert.assertNotNull(sr);
         Assert.assertEquals(amount, sr.getAmount(), 0.01D);
     }

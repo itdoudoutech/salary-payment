@@ -1,5 +1,6 @@
 package com.doudou.paymentClassification;
 
+import com.doudou.util.Paycheck;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -13,8 +14,9 @@ public class SalariedClassification extends PaymentClassification{
 
     private double salary;
 
+
     @Override
-    public double calculatePay() {
+    public double calculatePay(Paycheck paycheck) {
         return salary;
     }
 }

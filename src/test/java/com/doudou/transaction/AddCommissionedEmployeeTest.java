@@ -3,15 +3,13 @@ package com.doudou.transaction;
 import com.doudou.database.PayrollDatabase;
 import com.doudou.emp.Employee;
 import com.doudou.paymentClassification.CommissionedClassification;
-import com.doudou.paymentClassification.HourlyClassification;
 import com.doudou.paymentMethod.HoldMethod;
 import com.doudou.paymentSchedule.BiweeklySchedule;
-import com.doudou.paymentSchedule.WeeklySchedule;
 import org.junit.Assert;
 import org.junit.Test;
 
 
-public class AddCommissionedEmployeeTest {
+public class AddCommissionedEmployeeTest extends BaseTest {
 
     @Test
     public void addTest() {
@@ -27,8 +25,8 @@ public class AddCommissionedEmployeeTest {
         Assert.assertEquals(name, employee.getEmpName());
 
         Assert.assertTrue(employee.getPaymentClassification() instanceof CommissionedClassification);
-        Assert.assertEquals(salary, ((CommissionedClassification)employee.getPaymentClassification()).getSalary(), 0.01D);
-        Assert.assertEquals(commissionRate, ((CommissionedClassification)employee.getPaymentClassification()).getCommissionRate(), 0.01D);
+        Assert.assertEquals(salary, ((CommissionedClassification) employee.getPaymentClassification()).getSalary(), 0.01D);
+        Assert.assertEquals(commissionRate, ((CommissionedClassification) employee.getPaymentClassification()).getCommissionRate(), 0.01D);
         Assert.assertTrue(employee.getPaymentSchedule() instanceof BiweeklySchedule);
         Assert.assertTrue(employee.getPaymentMethod() instanceof HoldMethod);
     }

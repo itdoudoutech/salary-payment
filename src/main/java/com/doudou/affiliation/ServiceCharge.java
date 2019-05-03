@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+
+/**
+ * 服务费用记录
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

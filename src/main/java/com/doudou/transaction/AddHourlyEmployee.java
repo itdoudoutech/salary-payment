@@ -8,14 +8,14 @@ import com.doudou.paymentSchedule.WeeklySchedule;
 /**
  * 添加按钟点工
  */
-public class AddHourlydEmployee extends AddEmployeeTransaction {
+public class AddHourlyEmployee extends AddEmployeeTransaction {
 
     /**
      * 时薪
      */
     private double hourlyRate;
 
-    public AddHourlydEmployee(int empId, String empName, String empAddress, double hourlyRate) {
+    public AddHourlyEmployee(int empId, String empName, String empAddress, double hourlyRate) {
         super(empId, empName, empAddress);
         this.hourlyRate = hourlyRate;
     }

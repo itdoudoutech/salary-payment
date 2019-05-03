@@ -4,22 +4,20 @@ import com.doudou.affiliation.ServiceCharge;
 import com.doudou.affiliation.UnionAffiliation;
 import com.doudou.database.PayrollDatabase;
 import com.doudou.emp.Employee;
-import com.doudou.paymentClassification.HourlyClassification;
-import com.doudou.paymentClassification.TimeCard;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Date;
 
-public class AddServiceChargeTransactionTest {
+public class AddServiceChargeTransactionTest extends BaseTest {
 
     @Test
-    public void addTest(){
+    public void addTest() {
         int empId = 1;
         String name = "Bob";
         String address = "Home";
         double hourlyRate = 88.8;
-        AddHourlydEmployee hourlyEmployee = new AddHourlydEmployee(empId, name, address, hourlyRate);
+        AddHourlyEmployee hourlyEmployee = new AddHourlyEmployee(empId, name, address, hourlyRate);
         hourlyEmployee.execute();
 
         Employee employee = PayrollDatabase.getEmployee(empId);
@@ -39,7 +37,6 @@ public class AddServiceChargeTransactionTest {
         ServiceCharge sc = af.getServiceCharge(today);
         Assert.assertNotNull(sc);
         Assert.assertEquals(charge, sc.getAmount(), 0.01);
-
     }
 
 }

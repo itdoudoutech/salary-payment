@@ -5,7 +5,13 @@ import java.util.Date;
 public class BiweeklySchedule extends PaymentSchedule{
 
     @Override
-    boolean isPayDate(Date date) {
+    public boolean isPayDate(Date date) {
         return false;
+    }
+
+
+    @Override
+    public Date getPayPeriodStartDate(Date payPeriodEndDate) {
+        return null;
     }
 }

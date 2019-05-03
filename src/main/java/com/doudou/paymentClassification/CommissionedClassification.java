@@ -1,5 +1,6 @@
 package com.doudou.paymentClassification;
 
+import com.doudou.util.Paycheck;
 import lombok.Getter;
 
 import java.util.Date;
@@ -32,7 +33,8 @@ public class CommissionedClassification extends PaymentClassification{
     }
 
     @Override
-    public double calculatePay() {
+    public double calculatePay(Paycheck paycheck) {
+        // TODO 遍历销售额度卡片
         return 0;
     }
 

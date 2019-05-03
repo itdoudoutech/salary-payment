@@ -3,7 +3,6 @@ package com.doudou.transaction;
 import com.doudou.database.PayrollDatabase;
 import com.doudou.emp.Employee;
 
-
 public abstract class ChangeEmployeeTransaction implements Transaction{
 
     private int empId;
@@ -21,5 +20,5 @@ public abstract class ChangeEmployeeTransaction implements Transaction{
     }
 
 
-    public abstract void change(Employee employee);
+    protected abstract void change(Employee employee);
 }

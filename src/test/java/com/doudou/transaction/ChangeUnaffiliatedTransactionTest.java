@@ -1,11 +1,13 @@
 package com.doudou.transaction;
 
+import com.doudou.affiliation.Affiliation;
+import com.doudou.affiliation.NoAffiliation;
 import com.doudou.database.PayrollDatabase;
 import com.doudou.emp.Employee;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ChangeNameTransactionTest extends BaseTest {
+public class ChangeUnaffiliatedTransactionTest extends BaseTest {
 
     @Test
     public void changeTest() {
@@ -16,12 +18,18 @@ public class ChangeNameTransactionTest extends BaseTest {
         AddHourlyEmployee hourlyEmployee = new AddHourlyEmployee(empId, name, address, hourlyRate);
         hourlyEmployee.execute();
 
-        String newName = "Bill";
-        ChangeNameTransaction ct = new ChangeNameTransaction(empId, newName);
-        ct.execute();
+        int memberId = 1000;
+        ChangeUnaffiliatedTransaction cut = new ChangeUnaffiliatedTransaction(empId);
+        cut.execute();
+
         Employee employee = PayrollDatabase.getEmployee(empId);
         Assert.assertNotNull(employee);
-        Assert.assertEquals(newName, employee.getEmpName());
 
+        Affiliation af = employee.getAffiliation();
+        Assert.assertNotNull(af);
+        Assert.assertTrue(af instanceof NoAffiliation);
+
+        Employee member = PayrollDatabase.getUnionMember(memberId);
+        Assert.assertNull(member);
     }
 }

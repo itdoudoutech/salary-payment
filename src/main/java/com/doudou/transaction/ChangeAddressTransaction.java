@@ -12,7 +12,7 @@ public class ChangeAddressTransaction extends ChangeEmployeeTransaction {
     }
 
     @Override
-    public void change(Employee employee) {
+    protected void change(Employee employee) {
         employee.setEmpAddress(newAddress);
     }
 }

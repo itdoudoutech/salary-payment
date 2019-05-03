@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @AllArgsConstructor
-@NoArgsConstructor
 public class TimeCardTransaction implements Transaction{
 
     @Getter

@@ -5,15 +5,15 @@ import com.doudou.emp.Employee;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ChangeAddressTransactionTest {
+public class ChangeAddressTransactionTest extends BaseTest {
 
     @Test
-    public void testChangeName(){
+    public void changeTest() {
         int empId = 1;
         String name = "Bob";
         String address = "Home";
         double hourlyRate = 88.8;
-        AddHourlydEmployee hourlyEmployee = new AddHourlydEmployee(empId, name, address, hourlyRate);
+        AddHourlyEmployee hourlyEmployee = new AddHourlyEmployee(empId, name, address, hourlyRate);
         hourlyEmployee.execute();
 
         String newAddress = "School";

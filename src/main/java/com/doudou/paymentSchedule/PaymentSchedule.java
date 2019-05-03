@@ -12,6 +12,8 @@ public abstract class PaymentSchedule {
      * @param date
      * @return
      */
-    abstract boolean isPayDate(Date date);
+    public abstract boolean isPayDate(Date date);
 
+
+    public abstract Date getPayPeriodStartDate(Date payPeriodEndDate);
 }
