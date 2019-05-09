@@ -5,16 +5,11 @@ import org.junit.After;
 import org.junit.Before;
 
 /**
- * 防止测试用例之间互相干扰，每个测试用例开始和结束时要清空数据库
+ * 防止测试用例之间互相干扰，每个测试用例结束时清空测试数据
  */
 public class BaseTest {
 
     private static int count = 1;
-
-    @Before
-    public void before() {
-        PayrollDatabase.clearAll();
-    }
 
     @After
     public void after() {
