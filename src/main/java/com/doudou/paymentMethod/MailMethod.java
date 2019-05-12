@@ -9,6 +9,6 @@ public class MailMethod implements PaymentMethod {
 
     @Override
     public void pay(Paycheck pc) {
-
+        pc.setDisposition("Mail");
     }
 }

@@ -9,6 +9,6 @@ public class DirectMethod implements PaymentMethod {
 
     @Override
     public void pay(Paycheck pc) {
-
+        pc.setDisposition("Direct");
     }
 }

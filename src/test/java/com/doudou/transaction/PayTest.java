@@ -2,13 +2,9 @@ package com.doudou.transaction;
 
 import com.doudou.database.PayrollDatabase;
 import com.doudou.emp.Employee;
-import com.doudou.paymentClassification.SalariedClassification;
-import com.doudou.paymentMethod.HoldMethod;
-import com.doudou.paymentSchedule.MonthlySchedule;
 import com.doudou.util.Paycheck;
 import org.junit.Assert;
 import org.junit.Test;
-import org.omg.CORBA.PRIVATE_MEMBER;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,6 +35,7 @@ public class PayTest extends BaseTest {
         Paycheck pc = pt.getPaycheck(empId);
         Assert.assertNotNull(pc);
         Assert.assertTrue(pc.getPayPeriodEndDate() == payDate);
+        Assert.assertEquals("Hold", pc.getDisposition());
         Assert.assertEquals(1000.0D, pc.getGrossPay(), 0.01);
         Assert.assertEquals(0.00, pc.getDeductions(), 0.01);
         Assert.assertEquals(1000.0D, pc.getNetPay(), 0.01);
@@ -141,33 +138,6 @@ public class PayTest extends BaseTest {
     }
 
     /**
-     * 小时工，不是发薪日
-     */
-    @Test
-    public void paySingleHourlyEmployedOnWrongDate() {
-        int empId = 1;
-        String name = "Bob";
-        String address = "Home";
-        double hourlyRate = 15.25;
-        AddHourlyEmployee hourlyEmployee = new AddHourlyEmployee(empId, name, address, hourlyRate);
-        hourlyEmployee.execute();
-
-        Employee employee = PayrollDatabase.getEmployee(empId);
-        Assert.assertEquals(name, employee.getEmpName());
-
-        Date payDate = getPayDate(2019, 5, 1); // Not Friday，It's Wednesday
-        double hour = 10;
-        TimeCardTransaction tct = new TimeCardTransaction(payDate, hour, empId);
-        tct.execute();
-
-        PaydayTransaction pt = new PaydayTransaction(payDate);
-        pt.execute();
-
-        Paycheck paycheck = pt.getPaycheck(empId);
-        Assert.assertNull(paycheck);
-    }
-
-    /**
      * 小时工，两张时间卡
      */
     @Test
@@ -226,6 +196,33 @@ public class PayTest extends BaseTest {
     }
 
     /**
+     * 小时工，不是发薪日
+     */
+    @Test
+    public void paySingleHourlyEmployedOnWrongDate() {
+        int empId = 1;
+        String name = "Bob";
+        String address = "Home";
+        double hourlyRate = 15.25;
+        AddHourlyEmployee hourlyEmployee = new AddHourlyEmployee(empId, name, address, hourlyRate);
+        hourlyEmployee.execute();
+
+        Employee employee = PayrollDatabase.getEmployee(empId);
+        Assert.assertEquals(name, employee.getEmpName());
+
+        Date payDate = getPayDate(2019, 5, 1); // Not Friday，It's Wednesday
+        double hour = 10;
+        TimeCardTransaction tct = new TimeCardTransaction(payDate, hour, empId);
+        tct.execute();
+
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.execute();
+
+        Paycheck paycheck = pt.getPaycheck(empId);
+        Assert.assertNull(paycheck);
+    }
+
+    /**
      * 计算会费和有服务费
      */
     @Test
@@ -253,6 +250,7 @@ public class PayTest extends BaseTest {
 
         Paycheck pc = pt.getPaycheck(empId);
         Assert.assertNotNull(pc);
+        Assert.assertEquals("Hold", pc.getDisposition());
         Assert.assertTrue(pc.getPayPeriodEndDate() == payDate);
         Assert.assertEquals(8 * hourlyRate, pc.getGrossPay(), 0.001);
         Assert.assertEquals(9.42 + 19.42, pc.getDeductions(), 0.001);
@@ -295,6 +293,7 @@ public class PayTest extends BaseTest {
 
         Paycheck pc = pt.getPaycheck(empId);
         Assert.assertNotNull(pc);
+        Assert.assertEquals("Hold", pc.getDisposition());
         Assert.assertTrue(pc.getPayPeriodEndDate() == payDate);
         Assert.assertEquals(8 * hourlyRate, pc.getGrossPay(), 0.001);
         Assert.assertEquals(9.42 + 19.42, pc.getDeductions(), 0.001);
@@ -302,9 +301,164 @@ public class PayTest extends BaseTest {
 
     }
 
+    /**
+     * 带提成的雇员 没有销售凭条
+     */
+    @Test
+    public void paySingleCommissionedEmployedNoSalesReceipt() {
+        int empId = 1;
+        String name = "Bob";
+        String address = "Home";
+        double salary = 1500.25;
+        double commissionRate = 0.4;
+        AddCommissionedEmployee commissionedEmployee = new AddCommissionedEmployee(empId, name, address, salary, commissionRate);
+        commissionedEmployee.execute();
+
+        Date payDate = getPayDate(2019, 5, 3);
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.execute();
+
+        Paycheck pc = pt.getPaycheck(empId);
+        Assert.assertNotNull(pc);
+        Assert.assertEquals("Hold", pc.getDisposition());
+        Assert.assertTrue(pc.getPayPeriodEndDate() == payDate);
+        Assert.assertEquals(salary, pc.getGrossPay(), 0.001);
+        Assert.assertEquals(0, pc.getDeductions(), 0.001);
+        Assert.assertEquals(salary, pc.getNetPay(), 0.001);
+    }
+
+    /**
+     * 带提成的雇员 一张销售凭条
+     */
+    @Test
+    public void paySingleCommissionedEmployedOneSalesReceipt() {
+        int empId = 1;
+        String name = "Bob";
+        String address = "Home";
+        double salary = 1500.25;
+        double commissionRate = 0.4;
+        AddCommissionedEmployee commissionedEmployee = new AddCommissionedEmployee(empId, name, address, salary, commissionRate);
+        commissionedEmployee.execute();
+
+        Date payDate = getPayDate(2019, 5, 3);
+        Date earlyDay = getPayDate(2019, 5, 2);
+        double salesAmount = 1884.25;
+        SalesReceiptTransaction srt = new SalesReceiptTransaction(earlyDay, salesAmount, empId);
+        srt.execute();
+
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.execute();
+
+        Paycheck pc = pt.getPaycheck(empId);
+        Assert.assertNotNull(pc);
+        Assert.assertEquals("Hold", pc.getDisposition());
+        Assert.assertTrue(pc.getPayPeriodEndDate() == payDate);
+        Assert.assertEquals(salary + commissionRate * salesAmount, pc.getGrossPay(), 0.001);
+        Assert.assertEquals(0, pc.getDeductions(), 0.001);
+        Assert.assertEquals(salary + commissionRate * salesAmount, pc.getNetPay(), 0.001);
+    }
+
+    /**
+     * 带提成的雇员 两张张销售凭条
+     */
+    @Test
+    public void paySingleCommissionedEmployedTwoSalesReceipt() {
+        int empId = 1;
+        String name = "Bob";
+        String address = "Home";
+        double salary = 1500.25;
+        double commissionRate = 0.4;
+        AddCommissionedEmployee commissionedEmployee = new AddCommissionedEmployee(empId, name, address, salary, commissionRate);
+        commissionedEmployee.execute();
+
+        Date earlyDay = getPayDate(2019, 5, 2);
+        double salesAmount = 1884.25;
+        SalesReceiptTransaction srt = new SalesReceiptTransaction(earlyDay, salesAmount, empId);
+        srt.execute();
+
+        Date payDate = getPayDate(2019, 5, 3);
+        double salesAmount2 = 1668.50;
+        SalesReceiptTransaction srt2 = new SalesReceiptTransaction(payDate, salesAmount2, empId);
+        srt2.execute();
+
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.execute();
+
+        Paycheck pc = pt.getPaycheck(empId);
+        Assert.assertNotNull(pc);
+        Assert.assertEquals("Hold", pc.getDisposition());
+        Assert.assertTrue(pc.getPayPeriodEndDate() == payDate);
+        Assert.assertEquals(salary + commissionRate * (salesAmount + salesAmount2), pc.getGrossPay(), 0.001);
+        Assert.assertEquals(0, pc.getDeductions(), 0.001);
+        Assert.assertEquals(salary + commissionRate * (salesAmount + salesAmount2), pc.getNetPay(), 0.001);
+    }
+
+    /**
+     * 带提成的雇员 两张张销售凭条 只对当前支付期内的时间卡进行计算
+     */
+    @Test
+    public void paySingleCommissionedEmployedWithSalesReceiptsSpanningTwoPayPeriods() {
+        int empId = 1;
+        String name = "Bob";
+        String address = "Home";
+        double salary = 1500.25;
+        double commissionRate = 0.4;
+        AddCommissionedEmployee commissionedEmployee = new AddCommissionedEmployee(empId, name, address, salary, commissionRate);
+        commissionedEmployee.execute();
+
+        Date earlyDay = getPayDate(2019, 4, 9);
+        double salesAmount = 1884.25;
+        SalesReceiptTransaction srt1 = new SalesReceiptTransaction(earlyDay, salesAmount, empId);
+        srt1.execute();
+
+        Date payDate = getPayDate(2019, 5, 3);
+        double salesAmount2 = 1668.50;
+        SalesReceiptTransaction srt2 = new SalesReceiptTransaction(payDate, salesAmount2, empId);
+        srt2.execute();
+
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.execute();
+
+        Paycheck pc = pt.getPaycheck(empId);
+        Assert.assertNotNull(pc);
+        Assert.assertEquals("Hold", pc.getDisposition());
+        Assert.assertTrue(pc.getPayPeriodEndDate() == payDate);
+        Assert.assertEquals(salary + commissionRate * salesAmount2, pc.getGrossPay(), 0.001);
+        Assert.assertEquals(0, pc.getDeductions(), 0.001);
+        Assert.assertEquals(salary + commissionRate * salesAmount2, pc.getNetPay(), 0.001);
+    }
+
+    /**
+     * 带提成的雇员，不是发薪日
+     */
+    @Test
+    public void paySingleCommissionedEmployedOnWrongDate() {
+        int empId = 1;
+        String name = "Bob";
+        String address = "Home";
+        double salary = 1500.25;
+        double commissionRate = 0.4;
+        AddCommissionedEmployee commissionedEmployee = new AddCommissionedEmployee(empId, name, address, salary, commissionRate);
+        commissionedEmployee.execute();
+
+        Date payDate = getPayDate(2019, 5, 1); // Not Friday，It's Wednesday
+        Date earlyDay = getPayDate(2019, 4, 227);
+        double salesAmount = 1884.25;
+        SalesReceiptTransaction srt = new SalesReceiptTransaction(earlyDay, salesAmount, empId);
+        srt.execute();
+
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.execute();
+
+        Paycheck pc = pt.getPaycheck(empId);
+        Assert.assertNull(pc);
+    }
+
+
     private void validatePaycheck(PaydayTransaction pt, int empId, Date payDate, double pay) {
         Paycheck paycheck = pt.getPaycheck(empId);
         Assert.assertNotNull(paycheck);
+        Assert.assertEquals("Hold", paycheck.getDisposition());
         Assert.assertEquals(paycheck.getPayPeriodEndDate(), payDate);
         Assert.assertEquals(pay, paycheck.getGrossPay(), 0.01);
         Assert.assertEquals(0.0, paycheck.getDeductions(), 0.01);

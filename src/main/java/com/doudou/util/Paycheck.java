@@ -11,6 +11,8 @@ public class Paycheck {
 
     private double deductions;
 
+    private String disposition;
+    
     private double netPay;
 
     private Date payPeriodStartDate;

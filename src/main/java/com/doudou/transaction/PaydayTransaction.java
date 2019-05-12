@@ -8,6 +8,7 @@ import com.doudou.util.Paycheck;
 import java.util.*;
 
 public class PaydayTransaction implements Transaction {
+
     private Date date;
     private Map<Integer, Paycheck> paycheckMap = new HashMap<>();
 

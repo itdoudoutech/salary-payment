@@ -11,9 +11,9 @@ import com.doudou.paymentSchedule.PaymentSchedule;
  */
 public abstract class AddEmployeeTransaction implements Transaction {
 
-    protected int empId;
-    protected String empName;
-    protected String empAddress;
+    private int empId;
+    private String empName;
+    private String empAddress;
 
     public AddEmployeeTransaction(int empId, String empName, String empAddress) {
         this.empId = empId;

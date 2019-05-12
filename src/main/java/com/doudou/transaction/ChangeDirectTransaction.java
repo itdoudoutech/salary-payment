@@ -10,7 +10,7 @@ public class ChangeDirectTransaction extends ChangeMethodTransaction{
     }
 
     @Override
-    protected PaymentMethod getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return new DirectMethod();
     }
 }

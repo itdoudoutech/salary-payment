@@ -2,6 +2,7 @@ package com.doudou.transaction;
 
 import com.doudou.affiliation.Affiliation;
 import com.doudou.affiliation.NoAffiliation;
+import com.doudou.affiliation.UnionAffiliation;
 import com.doudou.database.PayrollDatabase;
 import com.doudou.emp.Employee;
 
@@ -13,7 +14,11 @@ public class ChangeUnaffiliatedTransaction extends ChangeAffiliationTransaction{
 
     @Override
     protected void recordMembership(Employee employee) {
-        PayrollDatabase.deleteUnionMember(employee.getEmpId());
+        Affiliation uf = employee.getAffiliation();
+        if(uf instanceof UnionAffiliation){
+            int memberId = ((UnionAffiliation)uf).getMemberId();
+            PayrollDatabase.deleteUnionMember(memberId);
+        }
     }
 
     @Override

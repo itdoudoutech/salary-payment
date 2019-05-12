@@ -1,5 +1,6 @@
 package com.doudou.paymentClassification;
 
+import com.doudou.util.DateUtil;
 import com.doudou.util.Paycheck;
 import lombok.Getter;
 
@@ -34,8 +35,13 @@ public class CommissionedClassification extends PaymentClassification{
 
     @Override
     public double calculatePay(Paycheck paycheck) {
-        // TODO 遍历销售额度卡片
-        return 0;
+        double salesAmount = 0;
+        for(SalesReceipt salesReceipt : salesReceipts.values()){
+            if(DateUtil.isInPayPeriod(salesReceipt.getDate(), paycheck)){
+                salesAmount += salesReceipt.getAmount();
+            }
+        }
+        return salary + salesAmount * commissionRate;
     }
 
     public void addSalesReceipt(SalesReceipt salesReceipt){
