@@ -11,5 +11,10 @@
 
 ## UML 图大致如下：
 
-真是不得不佩服作者的抽象能力。
+在整个不断优化的过程中，作者将他的抽象能力展现的淋漓尽致，作为程序员，拼到最后拼的就是抽象能力。
 
+![salary-payment](https://raw.githubusercontent.com/coderlmm/salary-payment/master/uml/salary-payment.jpg)
+
+![](https://raw.githubusercontent.com/coderlmm/salary-payment/master/uml/salary-payment-transaction-1.jpg)
+
+![](https://raw.githubusercontent.com/coderlmm/salary-payment/master/uml/salary-payment-transaction-2.jpg)
